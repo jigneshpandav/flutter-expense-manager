@@ -1,4 +1,4 @@
-# demo
+# Flutter Expense Manager
 
 A new Flutter project.
 

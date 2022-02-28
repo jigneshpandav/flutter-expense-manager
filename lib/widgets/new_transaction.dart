@@ -1,3 +1,5 @@
+import 'package:demo/widgets/adaptive_flat_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -35,6 +37,7 @@ class _NewTransactionState extends State<NewTransaction> {
   }
 
   void _presentDatePicker() {
+    print("inside date picker");
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -95,15 +98,7 @@ class _NewTransactionState extends State<NewTransaction> {
                             : "Picked Date: ${DateFormat.yMMMd().format(_selectedDate!)}",
                       ),
                     ),
-                    TextButton(
-                      onPressed: _presentDatePicker,
-                      child: const Text(
-                        'Choose date',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    )
+                    AdaptiveFlatButton("Choose date", _presentDatePicker)
                   ],
                 ),
               ),

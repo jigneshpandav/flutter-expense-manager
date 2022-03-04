@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:demo/widgets/adaptive_flat_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,7 @@ import 'package:intl/intl.dart';
 class NewTransaction extends StatefulWidget {
   final Function addTransaction;
 
-  NewTransaction(this.addTransaction);
+  const NewTransaction(this.addTransaction, {Key? key}) : super(key: key);
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -15,7 +17,7 @@ class NewTransaction extends StatefulWidget {
 class _NewTransactionState extends State<NewTransaction> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  DateTime? _selectedDate = null;
+  DateTime? _selectedDate;
 
   void _submitData() {
     final enteredTitle = _titleController.text;
@@ -37,21 +39,45 @@ class _NewTransactionState extends State<NewTransaction> {
   }
 
   void _presentDatePicker() {
-    print("inside date picker");
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2021),
-      lastDate: DateTime.now(),
-    ).then((pickedDate) {
-      print("selecte date ${pickedDate}");
-      if (pickedDate == null) {
-        return;
-      }
-      setState(() {
-        _selectedDate = pickedDate;
-      });
-    });
+    Platform.isIOS
+        ? showCupertinoModalPopup(
+            context: context,
+            builder: (BuildContext btx) {
+              return Container(
+                height: 300.0,
+                decoration: BoxDecoration(
+                  color: CupertinoDynamicColor.resolve(
+                      CupertinoColors.secondarySystemGroupedBackground, btx),
+                ),
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  initialDateTime: DateTime.now(),
+                  minimumDate: DateTime(2021),
+                  maximumDate: DateTime.now(),
+                  onDateTimeChanged: (pickedDate) {
+                    if (pickedDate == null) {
+                      return;
+                    }
+                    setState(() {
+                      _selectedDate = pickedDate;
+                    });
+                  },
+                ),
+              );
+            })
+        : showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2021),
+            lastDate: DateTime.now(),
+          ).then((pickedDate) {
+            if (pickedDate == null) {
+              return;
+            }
+            setState(() {
+              _selectedDate = pickedDate;
+            });
+          });
   }
 
   @override
@@ -71,7 +97,7 @@ class _NewTransactionState extends State<NewTransaction> {
             children: [
               TextField(
                 autocorrect: false,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Title",
                 ),
                 controller: _titleController,
@@ -80,14 +106,14 @@ class _NewTransactionState extends State<NewTransaction> {
               ),
               TextField(
                 autocorrect: false,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Amount",
                 ),
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 onSubmitted: (_) => _submitData,
               ),
-              Container(
+              SizedBox(
                 height: 70,
                 child: Row(
                   children: [

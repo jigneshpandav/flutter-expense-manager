@@ -29,19 +29,19 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
-              headline6: TextStyle(
+              headline6: const TextStyle(
                 fontFamily: "Open Sans",
                 fontSize: 20,
               ),
             ),
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return _userTransactions.where((tx) {
       return tx.date.isAfter(
         DateTime.now().subtract(
-          Duration(days: 7),
+          const Duration(days: 7),
         ),
       );
     }).toList();
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(25.0),
         ),
@@ -98,48 +98,56 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _buildCupertinoNavigationBar(String title) {
+    return CupertinoNavigationBar(
+        middle: Text(title),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            GestureDetector(
+                child: const Icon(CupertinoIcons.add),
+                onTap: () => _startAddNewTransaction(context))
+          ],
+        ));
+  }
+
+  Widget _buildAppBar(String title) {
+    return AppBar(
+      title: const Text(
+        "Personal expenses",
+        style: TextStyle(fontFamily: 'Open Sans'),
+      ),
+      actions: [
+        IconButton(
+          onPressed: () => _startAddNewTransaction(context),
+          icon: const Icon(Icons.add),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = (Platform.isIOS
-        ? CupertinoNavigationBar(
-            middle: Text('Personal Expenses'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                    child: Icon(CupertinoIcons.add),
-                    onTap: () => _startAddNewTransaction(context))
-              ],
-            ))
-        : AppBar(
-            title: Text(
-              "Personal expenses",
-              style: TextStyle(fontFamily: 'Open Sans'),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () => _startAddNewTransaction(context),
-                icon: Icon(Icons.add),
-              )
-            ],
-          )) as PreferredSizeWidget;
+        ? _buildCupertinoNavigationBar("Personal expenses")
+        : _buildAppBar("Personal expenses")) as PreferredSizeWidget;
     final pageBody = SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(5),
+          padding: const EdgeInsets.all(5),
           child: Column(
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
+              SizedBox(
                 height: (mediaQuery.size.height -
                         appBar.preferredSize.height -
                         mediaQuery.padding.top) *
                     0.2,
                 child: Chart(_recentTransactions),
               ),
-              Container(
+              SizedBox(
                 height: (mediaQuery.size.height -
                         appBar.preferredSize.height -
                         mediaQuery.padding.top) *
@@ -161,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
             body: pageBody,
             floatingActionButton: FloatingActionButton(
               onPressed: () => _startAddNewTransaction(context),
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,

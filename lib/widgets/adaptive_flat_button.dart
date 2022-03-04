@@ -7,7 +7,8 @@ class AdaptiveFlatButton extends StatelessWidget {
   final VoidCallback callBackFunction;
   final String label;
 
-  AdaptiveFlatButton(this.label, this.callBackFunction);
+  const AdaptiveFlatButton(this.label, this.callBackFunction, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class AdaptiveFlatButton extends StatelessWidget {
             onPressed: callBackFunction,
             child: Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
